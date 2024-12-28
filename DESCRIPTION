@@ -1,11 +1,18 @@
 Package: MutSignature
-Type: Package
-Title: What the Package Does (Title Case)
+Title: Analyze Genomic Loci and Match to Mutational Signatures
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Duccio Pagliai
+Maintainer: Duccio Pagliai <ducciopagliai@gmail.com>
+Description: A package for analyzing genomic loci, extracting their sequences 
+    from a reference genome, and matching them to mutational signatures 
+    (from COSMIC). This package provides tools to compute triplet 
+    frequencies and rank mutational signatures by likelihood.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Imports: 
+    BSgenome,
+    GenomicRanges,
+    rtracklayer,
+    BSgenome.Hsapiens.UCSC.hg38
+RoxygenNote: 7.3.2
