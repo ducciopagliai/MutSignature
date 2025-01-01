@@ -1,0 +1,98 @@
+---
+title: "introduction_to_MutSignature"
+author: "Duccio Pagliai"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{introduction_to_MutSignature}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, include = FALSE}
+# Install package
+#devtools::install_github("ducciopagliai/MutSignature")
+library(MutSignature)
+```
+
+## Description
+`MutSignature` is a tool designed to analyze genomic loci and assess their mutational signatures based on COSMIC mutational patterns. 
+The use of the package is demonstrated with an example.
+
+
+## Step 1: Extract DNA Sequences from Genomic Loci
+The extract_sequences function retrieves DNA sequences from a reference genome given a set of loci in the format chr:start-end.
+
+```{r}
+library(BSgenome.Hsapiens.UCSC.hg38)
+library(decompTumor2Sig)
+# Define loci
+loci <- c("chr1:1000000-1000100", "chr2:2000000-2000100")
+
+# Extract sequences
+sequence_df <- extract_sequences(loci, BSgenome.Hsapiens.UCSC.hg38)
+print(sequence_df)
+```
+
+## Step 2: Count Triplets
+Use the count_triplets_per_locus function to count triplets in each sequence or count_triplets_aggregated to count triplets across all loci.
+
+```{r}
+# Count triplets for each locus
+triplet_counts <- count_triplets_per_locus(sequence_df)
+print(triplet_counts)
+
+# Aggregate triplet counts across all loci
+global_triplet_counts <- count_triplets_aggregated(triplet_counts)
+print(global_triplet_counts)
+```
+
+
+## Step 3: Map Triplets to COSMIC format
+Use the map_to_cosmic function to map the triplet counts to the COSMIC mutational signatures.
+
+```{r}
+# Define the path to the COSMIC file
+cosmic_path <- system.file("extdata", "COSMIC_v3.4_SBS_GRCh38 2.txt", package = "MutSignature")
+
+# Map counts per locus to COSMIC format
+cosmic_counts_per_locus <- map_to_cosmic(triplet_counts, cosmic_path)
+print(cosmic_counts_per_locus)
+
+# Map aggregated counts to COSMIC format
+cosmic_counts_aggregated <- map_to_cosmic(global_triplet_counts, cosmic_path)
+print(cosmic_counts_aggregated)
+```
+
+
+## Step 4: Decompose Mutational Signatures
+Use the decompose_signatures function to determine the contribution of each COSMIC signature to the observed mutations.
+
+```{r}
+# Decompose per locus
+result_per_locus <- decompose_signatures(cosmic_counts_per_locus, cosmic_path)
+print(result_per_locus)
+
+# Decompose aggregated counts
+result_aggregated <- decompose_signatures(cosmic_counts_aggregated, cosmic_path)
+print(result_aggregated)
+```
+
+
+## Additional resources
+- COSMIC Signatures:
+https://cancer.sanger.ac.uk/signatures/
+
+
+
+
+
+
+
+
